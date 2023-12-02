@@ -4,6 +4,8 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import com.inventorycontrolapi.domains.CompanyDomain;
+import com.inventorycontrolapi.domains.exceptions.InvalidCompanyDomainException;
 import com.inventorycontrolapi.dtos.company.SignUpCompanyDTORequest;
 import com.inventorycontrolapi.dtos.company.SignUpCompanyDTOResponse;
 import com.inventorycontrolapi.models.CompanyModel;
@@ -20,7 +22,13 @@ public class CompanyService {
 		this.companyRepository = companyRepository;
 	}
 
-	public SignUpCompanyDTOResponse signUp(SignUpCompanyDTORequest signUpCompanyDTORequest) throws EmailAlreadyRegisteredException {
+	public SignUpCompanyDTOResponse signUp(SignUpCompanyDTORequest signUpCompanyDTORequest) throws InvalidCompanyDomainException, EmailAlreadyRegisteredException {
+		CompanyDomain.validate(
+			signUpCompanyDTORequest.getName(),
+			signUpCompanyDTORequest.getEmail(),
+			signUpCompanyDTORequest.getPassword()
+		);
+
 		Optional<CompanyModel> findCompanyModelByEmail = this.companyRepository.findByEmail(
 			signUpCompanyDTORequest.getEmail()
 		);
