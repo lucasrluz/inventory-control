@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import com.inventorycontrolapi.dtos.company.SignInCompanyDTORequest;
+import com.inventorycontrolapi.dtos.company.SignInCompanyDTOResponse;
 import com.inventorycontrolapi.dtos.company.SignUpCompanyDTORequest;
 import com.inventorycontrolapi.dtos.company.SignUpCompanyDTOResponse;
 import com.inventorycontrolapi.services.CompanyService;
@@ -28,6 +30,17 @@ public class CompanyController extends ResponseEntityExceptionHandler {
 			SignUpCompanyDTOResponse signUpCompanyDTOResponse = this.companyService.signUp(signUpCompanyDTORequest);
 
 			return ResponseEntity.status(201).body(signUpCompanyDTOResponse);
+		} catch (Exception exception) {
+			return ResponseEntity.status(400).body(exception.getMessage());
+		}
+	}
+
+	@PostMapping("/auth/signin")
+	public ResponseEntity<Object> signIn(@RequestBody SignInCompanyDTORequest signInCompanyDTORequest) {
+		try {
+			SignInCompanyDTOResponse signInCompanyDTOResponse = this.companyService.signIn(signInCompanyDTORequest);
+
+			return ResponseEntity.status(201).body(signInCompanyDTOResponse);
 		} catch (Exception exception) {
 			return ResponseEntity.status(400).body(exception.getMessage());
 		}
