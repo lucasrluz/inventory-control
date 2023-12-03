@@ -6,6 +6,8 @@ import org.springframework.stereotype.Service;
 
 import com.inventorycontrolapi.domains.CompanyDomain;
 import com.inventorycontrolapi.domains.exceptions.InvalidCompanyDomainException;
+import com.inventorycontrolapi.dtos.company.GetCompanyDTORequest;
+import com.inventorycontrolapi.dtos.company.GetCompanyDTOResponse;
 import com.inventorycontrolapi.dtos.company.SignInCompanyDTORequest;
 import com.inventorycontrolapi.dtos.company.SignInCompanyDTOResponse;
 import com.inventorycontrolapi.dtos.company.SignUpCompanyDTORequest;
@@ -76,5 +78,17 @@ public class CompanyService {
         String jwt = this.jwtService.generateJwt(findCompanyModelByEmail.get().getCompanyId().toString());
 
         return new SignInCompanyDTOResponse(jwt);
+	}
+
+	public GetCompanyDTOResponse get(GetCompanyDTORequest getCompanyDTORequest) {
+		Optional<CompanyModel> findCompanyModelByCompanyId = this.companyRepository.findById(
+			Long.parseLong(getCompanyDTORequest.getCompanyId())
+		);
+
+		return new GetCompanyDTOResponse(
+			findCompanyModelByCompanyId.get().getCompanyId().toString(),
+			findCompanyModelByCompanyId.get().getName(),
+			findCompanyModelByCompanyId.get().getEmail()
+		);
 	}
 }
