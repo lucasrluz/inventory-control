@@ -13,4 +13,12 @@ public abstract class CompanyModelBuilder {
 			BCrypt.withDefaults().hashToString(12, "123".toCharArray())
 		);
 	}
+
+	public static CompanyModel createWithEmptyCompanyIdAndHashPassword() {
+		return new CompanyModel(
+			"Company A",
+			"companya@gmail.com",
+			BCrypt.withDefaults().hashToString(12, "123".toCharArray())
+		);
+	}
 }
