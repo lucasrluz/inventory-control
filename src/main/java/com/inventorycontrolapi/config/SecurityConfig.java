@@ -16,6 +16,7 @@ public class SecurityConfig {
 
         httpSecurity.authorizeHttpRequests(authorize -> authorize
             .requestMatchers(HttpMethod.POST, "/api/company/auth/signup").permitAll()
+			.requestMatchers(HttpMethod.POST, "/api/company/auth/signin").permitAll()
             .anyRequest().authenticated()
         );
 
