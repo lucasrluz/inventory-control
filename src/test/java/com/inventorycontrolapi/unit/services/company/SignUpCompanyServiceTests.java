@@ -1,4 +1,4 @@
-package com.inventorycontrolapi.unit.company;
+package com.inventorycontrolapi.unit.services.company;
 
 import java.util.Optional;
 
