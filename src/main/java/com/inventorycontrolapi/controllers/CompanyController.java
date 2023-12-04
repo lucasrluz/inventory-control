@@ -3,6 +3,7 @@ package com.inventorycontrolapi.controllers;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -11,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import com.inventorycontrolapi.dtos.company.DeleteCompanyDTORequest;
+import com.inventorycontrolapi.dtos.company.DeleteCompanyDTOResponse;
 import com.inventorycontrolapi.dtos.company.GetCompanyDTORequest;
 import com.inventorycontrolapi.dtos.company.GetCompanyDTOResponse;
 import com.inventorycontrolapi.dtos.company.SignInCompanyDTORequest;
@@ -77,5 +80,16 @@ public class CompanyController extends ResponseEntityExceptionHandler {
 		} catch (Exception exception) {
 			return ResponseEntity.status(400).body(exception.getMessage());
 		}
+	}
+
+	@DeleteMapping
+	public ResponseEntity<Object> delete(Authentication authentication) {
+		String companyId = authentication.getName();
+
+		DeleteCompanyDTORequest deleteCompanyDTORequest = new DeleteCompanyDTORequest(companyId);
+
+		DeleteCompanyDTOResponse deleteCompanyDTOResponse = this.companyService.delete(deleteCompanyDTORequest);
+
+		return ResponseEntity.status(200).body(deleteCompanyDTOResponse);
 	}
 }
