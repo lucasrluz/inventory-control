@@ -112,6 +112,7 @@ public class CompanyService {
 		String hashPassword = BCrypt.withDefaults().hashToString(12, updateCompanyDTORequest.getPassword().toCharArray());
 
 		CompanyModel companyModel = new CompanyModel(
+			Long.parseLong(updateCompanyDTORequest.getCompanyId()),
 			updateCompanyDTORequest.getName(),
 			updateCompanyDTORequest.getEmail(),
 			hashPassword
