@@ -1,15 +1,14 @@
 package com.inventorycontrolapi.util.company;
 
-import com.inventorycontrolapi.dtos.company.SignUpCompanyDTORequest;
 import com.inventorycontrolapi.dtos.company.UpdateCompanyDTORequest;
 
 public abstract class UpdateCompanyDTORequestBuilder {
 	public static UpdateCompanyDTORequest createWithValidData() {
 		return new UpdateCompanyDTORequest(
 			"0",
-			"Company A",
-			"companya@gmail.com",
-			"123"
+			"Company B",
+			"companyb@gmail.com",
+			"456"
 		);
 	}
 	
@@ -17,34 +16,34 @@ public abstract class UpdateCompanyDTORequestBuilder {
 		return new UpdateCompanyDTORequest(
 			"0",
 			"",
-			"companya@gmail.com",
-			"123"
+			"companyb@gmail.com",
+			"456"
 		);
 	}
 	
 	public static UpdateCompanyDTORequest createWithEmptyEmail() {
 		return new UpdateCompanyDTORequest(
 			"0",
-			"Company A",
+			"Company B",
 			"",
-			"123"
+			"456"
 		);
 	}
 	
 	public static UpdateCompanyDTORequest createWithInvalidEmailFormat() {
 		return new UpdateCompanyDTORequest(
 			"0",
-			"Company A",
+			"Company B",
 			"@gmail.com",
-			"123"
+			"456"
 		);
 	}
 	
 	public static UpdateCompanyDTORequest createWithEmptyPassword() {
 		return new UpdateCompanyDTORequest(
 			"0",
-			"Company A",
-			"companya@gmail.com",
+			"Company B",
+			"companyb@gmail.com",
 			""
 		);
 	}
