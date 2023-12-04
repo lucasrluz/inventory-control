@@ -12,6 +12,8 @@ import com.inventorycontrolapi.dtos.company.SignInCompanyDTORequest;
 import com.inventorycontrolapi.dtos.company.SignInCompanyDTOResponse;
 import com.inventorycontrolapi.dtos.company.SignUpCompanyDTORequest;
 import com.inventorycontrolapi.dtos.company.SignUpCompanyDTOResponse;
+import com.inventorycontrolapi.dtos.company.UpdateCompanyDTORequest;
+import com.inventorycontrolapi.dtos.company.UpdateCompanyDTOResponse;
 import com.inventorycontrolapi.models.CompanyModel;
 import com.inventorycontrolapi.repositories.CompanyRepository;
 import com.inventorycontrolapi.services.exceptions.EmailAlreadyRegisteredException;
@@ -89,6 +91,38 @@ public class CompanyService {
 			findCompanyModelByCompanyId.get().getCompanyId().toString(),
 			findCompanyModelByCompanyId.get().getName(),
 			findCompanyModelByCompanyId.get().getEmail()
+		);
+	}
+
+	public UpdateCompanyDTOResponse update(UpdateCompanyDTORequest updateCompanyDTORequest) throws InvalidCompanyDomainException, EmailAlreadyRegisteredException {
+		CompanyDomain.validate(
+			updateCompanyDTORequest.getName(),
+			updateCompanyDTORequest.getEmail(),
+			updateCompanyDTORequest.getPassword()
+		);
+
+		Optional<CompanyModel> findCompanyModelByEmail = this.companyRepository.findByEmail(
+			updateCompanyDTORequest.getEmail()
+		);
+
+		if (!findCompanyModelByEmail.isEmpty()) {
+			throw new EmailAlreadyRegisteredException();
+		}
+
+		String hashPassword = BCrypt.withDefaults().hashToString(12, updateCompanyDTORequest.getPassword().toCharArray());
+
+		CompanyModel companyModel = new CompanyModel(
+			updateCompanyDTORequest.getName(),
+			updateCompanyDTORequest.getEmail(),
+			hashPassword
+		);
+
+		CompanyModel saveCompanyModel = this.companyRepository.save(companyModel);
+
+		return new UpdateCompanyDTOResponse(
+			saveCompanyModel.getCompanyId().toString(),
+			saveCompanyModel.getName(),
+			saveCompanyModel.getEmail()
 		);
 	}
 }
