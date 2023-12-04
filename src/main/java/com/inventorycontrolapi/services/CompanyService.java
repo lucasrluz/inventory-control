@@ -6,6 +6,8 @@ import org.springframework.stereotype.Service;
 
 import com.inventorycontrolapi.domains.CompanyDomain;
 import com.inventorycontrolapi.domains.exceptions.InvalidCompanyDomainException;
+import com.inventorycontrolapi.dtos.company.DeleteCompanyDTORequest;
+import com.inventorycontrolapi.dtos.company.DeleteCompanyDTOResponse;
 import com.inventorycontrolapi.dtos.company.GetCompanyDTORequest;
 import com.inventorycontrolapi.dtos.company.GetCompanyDTOResponse;
 import com.inventorycontrolapi.dtos.company.SignInCompanyDTORequest;
@@ -125,5 +127,11 @@ public class CompanyService {
 			saveCompanyModel.getName(),
 			saveCompanyModel.getEmail()
 		);
+	}
+
+	public DeleteCompanyDTOResponse delete(DeleteCompanyDTORequest deleteCompanyDTORequest) {
+		this.companyRepository.deleteById(Long.parseLong(deleteCompanyDTORequest.getCompanyId()));
+
+		return new DeleteCompanyDTOResponse(deleteCompanyDTORequest.getCompanyId());
 	}
 }
