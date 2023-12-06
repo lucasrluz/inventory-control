@@ -1,10 +1,13 @@
 package com.inventorycontrolapi.models;
 
+import java.util.Set;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -22,6 +25,9 @@ public class CompanyModel {
 
 	@Column(nullable = false)
 	private String password;
+
+	@OneToMany(mappedBy = "companyModel")
+	private Set<ItemCategoryModel> itemCategoryModels;
 
 	public CompanyModel() {}
 
@@ -68,5 +74,13 @@ public class CompanyModel {
 
 	public void setPassword(String password) {
 		this.password = password;
+	}
+
+	public Set<ItemCategoryModel> getItemCategoryModels() {
+		return itemCategoryModels;
+	}
+
+	public void setItemCategoryModels(Set<ItemCategoryModel> itemCategoryModels) {
+		this.itemCategoryModels = itemCategoryModels;
 	}
 }
