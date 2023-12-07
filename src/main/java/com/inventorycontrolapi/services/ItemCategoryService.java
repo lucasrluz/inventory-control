@@ -12,10 +12,14 @@ import com.inventorycontrolapi.dtos.itemCategory.GetAllItemCategoryDTORequest;
 import com.inventorycontrolapi.dtos.itemCategory.GetAllItemCategoryDTOResponse;
 import com.inventorycontrolapi.dtos.itemCategory.SaveItemCategoryDTORequest;
 import com.inventorycontrolapi.dtos.itemCategory.SaveItemCategoryDTOResponse;
+import com.inventorycontrolapi.dtos.itemCategory.UpdateItemCategoryDTORequest;
+import com.inventorycontrolapi.dtos.itemCategory.UpdateItemCategoryDTOResponse;
 import com.inventorycontrolapi.models.CompanyModel;
 import com.inventorycontrolapi.models.ItemCategoryModel;
 import com.inventorycontrolapi.repositories.CompanyRepository;
 import com.inventorycontrolapi.repositories.ItemCategoryRepository;
+import com.inventorycontrolapi.services.exceptions.NameAlreadyRegisteredException;
+import com.inventorycontrolapi.services.exceptions.NotFoundItemCategoryException;
 
 @Service
 public class ItemCategoryService {
@@ -65,5 +69,46 @@ public class ItemCategoryService {
 		});
 
 		return getAllItemCategoryDTOResponses;
+	}
+
+	public UpdateItemCategoryDTOResponse update(UpdateItemCategoryDTORequest updateItemCategoryDTORequest) throws NotFoundItemCategoryException, InvalidItemCategoryDomainException, NameAlreadyRegisteredException {
+		Optional<ItemCategoryModel> findItemCategoryModelByItemCategoryId = this.itemCategoryRepository.findById(Long.parseLong(
+			updateItemCategoryDTORequest.getItemCategoryId())
+		);
+
+		if (findItemCategoryModelByItemCategoryId.isEmpty()) {
+			throw new NotFoundItemCategoryException();
+		}
+
+		if (!findItemCategoryModelByItemCategoryId.get().getCompanyModel().getCompanyId().toString().equals(updateItemCategoryDTORequest.getCompanyId())) {
+			throw new NotFoundItemCategoryException();
+		}
+
+		ItemCategoryDomain.validate(updateItemCategoryDTORequest.getName());
+
+		Optional<ItemCategoryModel> findItemCategoryModelByName = this.itemCategoryRepository.findByName(
+			updateItemCategoryDTORequest.getName()
+		);
+
+		if (!findItemCategoryModelByName.isEmpty() && findItemCategoryModelByName.get().getItemCategoryId() == findItemCategoryModelByItemCategoryId.get().getItemCategoryId()) {
+			throw new NameAlreadyRegisteredException();
+		}
+
+		Optional<CompanyModel> findCompanyModel = this.companyRepository.findById(Long.parseLong(
+			updateItemCategoryDTORequest.getCompanyId())
+		);
+
+		ItemCategoryModel itemCategoryModel = new ItemCategoryModel(
+			findItemCategoryModelByItemCategoryId.get().getItemCategoryId(),
+			updateItemCategoryDTORequest.getName(),
+			findCompanyModel.get()
+		);
+
+		ItemCategoryModel saveItemCategoryModel = this.itemCategoryRepository.save(itemCategoryModel);
+
+		return new UpdateItemCategoryDTOResponse(
+			saveItemCategoryModel.getItemCategoryId().toString(),
+			saveItemCategoryModel.getName()
+		);
 	}
 }
