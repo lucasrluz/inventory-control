@@ -1,4 +1,4 @@
-package com.inventorycontrolapi.e2e.company;
+package com.inventorycontrolapi.e2e.auth;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
