@@ -90,7 +90,7 @@ public class ItemCategoryService {
 			updateItemCategoryDTORequest.getName()
 		);
 
-		if (!findItemCategoryModelByName.isEmpty() && findItemCategoryModelByName.get().getItemCategoryId() == findItemCategoryModelByItemCategoryId.get().getItemCategoryId()) {
+		if (!findItemCategoryModelByName.isEmpty() && findItemCategoryModelByName.get().getCompanyModel().getCompanyId().toString().equals(updateItemCategoryDTORequest.getCompanyId())) {
 			throw new NameAlreadyRegisteredException();
 		}
 
