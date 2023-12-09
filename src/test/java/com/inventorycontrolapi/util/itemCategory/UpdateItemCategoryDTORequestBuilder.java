@@ -12,6 +12,6 @@ public abstract class UpdateItemCategoryDTORequestBuilder {
 	}
 	
 	public static UpdateItemCategoryDTORequest createWithEmptyName() {
-		return new UpdateItemCategoryDTORequest("0", "0", "Item Category B");
+		return new UpdateItemCategoryDTORequest("0", "0", "");
 	}
 }
