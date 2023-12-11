@@ -119,7 +119,11 @@ public class ItemCategoryService {
 			Long.parseLong(deleteItemCategoryDTORequest.getItemCategoryId())
 		);	
 
-		if (!findItemCategoryModelByItemCategoryId.isEmpty() && !findItemCategoryModelByItemCategoryId.get().getCompanyModel().getCompanyId().toString().equals(deleteItemCategoryDTORequest.getCompanyId())) {
+		if (findItemCategoryModelByItemCategoryId.isEmpty()) {
+			throw new NotFoundItemCategoryException();
+		}
+
+		if (!findItemCategoryModelByItemCategoryId.get().getCompanyModel().getCompanyId().toString().equals(deleteItemCategoryDTORequest.getCompanyId())) {
 			throw new NotFoundItemCategoryException();
 		}
 

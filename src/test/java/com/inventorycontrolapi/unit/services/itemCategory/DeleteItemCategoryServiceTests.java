@@ -17,6 +17,7 @@ import com.inventorycontrolapi.models.CompanyModel;
 import com.inventorycontrolapi.models.ItemCategoryModel;
 import com.inventorycontrolapi.repositories.ItemCategoryRepository;
 import com.inventorycontrolapi.services.ItemCategoryService;
+import com.inventorycontrolapi.services.exceptions.NotFoundItemCategoryException;
 import com.inventorycontrolapi.util.company.CompanyModelBuilder;
 import com.inventorycontrolapi.util.itemCategory.DeleteItemCategoryDTORequestBuilder;
 import com.inventorycontrolapi.util.itemCategory.ItemCategoryModelBuilder;
@@ -42,5 +43,34 @@ public class DeleteItemCategoryServiceTests {
 		DeleteItemCategoryDTOResponse deleteItemCategoryDTOResponse = this.itemCategoryService.delete(deleteItemCategoryDTORequest);
 
 		Assertions.assertThat(deleteItemCategoryDTOResponse.getItemCategoryId()).isEqualTo(itemCategoryModelMock.getItemCategoryId().toString());
+	}
+	
+	@Test
+	public void retornaException_ItemCategoryNaoCadastrada() throws Exception {
+		// Mocks
+		BDDMockito.when(this.itemCategoryRepository.findById(ArgumentMatchers.any())).thenReturn(Optional.empty());
+
+		// Test
+		DeleteItemCategoryDTORequest deleteItemCategoryDTORequest = DeleteItemCategoryDTORequestBuilder.createWithValidData();
+
+		Assertions.assertThatExceptionOfType(NotFoundItemCategoryException.class)
+			.isThrownBy(() -> this.itemCategoryService.delete(deleteItemCategoryDTORequest))
+			.withMessage("Not found Item Category");
+	}
+
+	@Test
+	public void retornaException_ItemCategoryDeCompanyDiferenteDoInformado() throws Exception {
+		// Mocks
+		CompanyModel companyModelMock = CompanyModelBuilder.createWithCompanyIdAndHashPassword();
+		ItemCategoryModel itemCategoryModelMock = ItemCategoryModelBuilder.createWithItemCategoryId(companyModelMock);
+		BDDMockito.when(this.itemCategoryRepository.findById(ArgumentMatchers.any())).thenReturn(Optional.of(itemCategoryModelMock));
+
+		// Test
+		DeleteItemCategoryDTORequest deleteItemCategoryDTORequest = DeleteItemCategoryDTORequestBuilder.createWithValidData();
+		deleteItemCategoryDTORequest.setCompanyId("1");
+
+		Assertions.assertThatExceptionOfType(NotFoundItemCategoryException.class)
+			.isThrownBy(() -> this.itemCategoryService.delete(deleteItemCategoryDTORequest))
+			.withMessage("Not found Item Category");
 	}
 }
