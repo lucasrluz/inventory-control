@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.inventorycontrolapi.domains.exceptions.InvalidItemCategoryDomainException;
+import com.inventorycontrolapi.dtos.itemCategory.DeleteItemCategoryDTORequest;
+import com.inventorycontrolapi.dtos.itemCategory.DeleteItemCategoryDTOResponse;
 import com.inventorycontrolapi.dtos.itemCategory.GetAllItemCategoryDTORequest;
 import com.inventorycontrolapi.dtos.itemCategory.GetAllItemCategoryDTOResponse;
 import com.inventorycontrolapi.dtos.itemCategory.SaveItemCategoryDTORequest;
@@ -77,6 +80,20 @@ public class ItemCategoryController {
 			return ResponseEntity.status(404).body(exception.getMessage());
 		} catch (InvalidItemCategoryDomainException | NameAlreadyRegisteredException exception) {
 			return ResponseEntity.status(400).body(exception.getMessage());
+		}
+	}
+
+	@DeleteMapping("/{itemCategoryId}")
+	public ResponseEntity<Object> delete(@PathVariable String itemCategoryId, Authentication authentication) {
+		try {
+			String companyId = authentication.getName();
+			DeleteItemCategoryDTORequest deleteItemCategoryDTORequest = new DeleteItemCategoryDTORequest(itemCategoryId, companyId);
+
+			DeleteItemCategoryDTOResponse deleteItemCategoryDTOResponse = this.itemCategoryService.delete(deleteItemCategoryDTORequest);
+
+			return ResponseEntity.status(200).body(deleteItemCategoryDTOResponse);
+		} catch (Exception exception) {
+			return ResponseEntity.status(404).body(exception.getMessage());
 		}
 	}
 
