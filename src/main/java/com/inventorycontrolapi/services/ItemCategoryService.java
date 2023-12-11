@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 
 import com.inventorycontrolapi.domains.ItemCategoryDomain;
 import com.inventorycontrolapi.domains.exceptions.InvalidItemCategoryDomainException;
+import com.inventorycontrolapi.dtos.itemCategory.DeleteItemCategoryDTORequest;
+import com.inventorycontrolapi.dtos.itemCategory.DeleteItemCategoryDTOResponse;
 import com.inventorycontrolapi.dtos.itemCategory.GetAllItemCategoryDTORequest;
 import com.inventorycontrolapi.dtos.itemCategory.GetAllItemCategoryDTOResponse;
 import com.inventorycontrolapi.dtos.itemCategory.SaveItemCategoryDTORequest;
@@ -110,5 +112,19 @@ public class ItemCategoryService {
 			saveItemCategoryModel.getItemCategoryId().toString(),
 			saveItemCategoryModel.getName()
 		);
+	}
+
+	public DeleteItemCategoryDTOResponse delete(DeleteItemCategoryDTORequest deleteItemCategoryDTORequest) throws NotFoundItemCategoryException {
+		Optional<ItemCategoryModel> findItemCategoryModelByItemCategoryId = this.itemCategoryRepository.findById(
+			Long.parseLong(deleteItemCategoryDTORequest.getItemCategoryId())
+		);	
+
+		if (!findItemCategoryModelByItemCategoryId.isEmpty() && !findItemCategoryModelByItemCategoryId.get().getCompanyModel().getCompanyId().toString().equals(deleteItemCategoryDTORequest.getCompanyId())) {
+			throw new NotFoundItemCategoryException();
+		}
+
+		this.itemCategoryRepository.deleteById(Long.parseLong(deleteItemCategoryDTORequest.getItemCategoryId()));
+
+		return new DeleteItemCategoryDTOResponse(deleteItemCategoryDTORequest.getItemCategoryId());
 	}
 }
