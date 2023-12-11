@@ -29,6 +29,9 @@ public class CompanyModel {
 	@OneToMany(mappedBy = "companyModel")
 	private Set<ItemCategoryModel> itemCategoryModels;
 
+	@OneToMany(mappedBy = "companyModel")
+	private Set<ItemModel> itemModels;
+
 	public CompanyModel() {}
 
 	public CompanyModel(String name, String email, String password) {
@@ -78,6 +81,14 @@ public class CompanyModel {
 
 	public Set<ItemCategoryModel> getItemCategoryModels() {
 		return itemCategoryModels;
+	}
+
+	public Set<ItemModel> getItemModels() {
+		return itemModels;
+	}
+
+	public void setItemModels(Set<ItemModel> itemModels) {
+		this.itemModels = itemModels;
 	}
 
 	public void setItemCategoryModels(Set<ItemCategoryModel> itemCategoryModels) {
