@@ -80,6 +80,14 @@ public class ItemModel {
 		return quantityInStock;
 	}
 
+	public ItemCategoryModel getItemCategoryModel() {
+		return itemCategoryModel;
+	}
+
+	public void setItemCategoryModel(ItemCategoryModel itemCategoryModel) {
+		this.itemCategoryModel = itemCategoryModel;
+	}
+
 	public void setQuantityInStock(int quantityInStock) {
 		this.quantityInStock = quantityInStock;
 	}
