@@ -20,7 +20,7 @@ public class ItemModel {
 	private String name;
 
 	@Column(nullable = false, name = "unit_price")
-	private int unitPrice;
+	private double unitPrice;
 
 	@Column(nullable = false, name = "quantity_in_stock")
 	private int quantityInStock;
@@ -35,7 +35,7 @@ public class ItemModel {
 
 	public ItemModel() {}
 
-	public ItemModel(String name, int unitPrice, int quantityInStock, CompanyModel companyModel, ItemCategoryModel itemCategoryModel) {
+	public ItemModel(String name, double unitPrice, int quantityInStock, CompanyModel companyModel, ItemCategoryModel itemCategoryModel) {
 		this.name = name;
 		this.unitPrice = unitPrice;
 		this.quantityInStock = quantityInStock;
@@ -43,7 +43,8 @@ public class ItemModel {
 		this.itemCategoryModel = itemCategoryModel;
 	}
 
-	public ItemModel(Long itemId, String name, int unitPrice, int quantityInStock, CompanyModel companyModel, ItemCategoryModel itemCategoryModel) {
+	public ItemModel(Long itemId, String name, double unitPrice, int quantityInStock, CompanyModel companyModel, ItemCategoryModel itemCategoryModel) {
+		this.itemId = itemId;
 		this.name = name;
 		this.unitPrice = unitPrice;
 		this.quantityInStock = quantityInStock;
@@ -67,11 +68,11 @@ public class ItemModel {
 		this.name = name;
 	}
 
-	public int getUnitPrice() {
+	public double getUnitPrice() {
 		return unitPrice;
 	}
 
-	public void setUnitPrice(int unitPrice) {
+	public void setUnitPrice(double unitPrice) {
 		this.unitPrice = unitPrice;
 	}
 
