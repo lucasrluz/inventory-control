@@ -1,11 +1,15 @@
 package com.inventorycontrolapi.services;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
 import com.inventorycontrolapi.domains.ItemDomain;
 import com.inventorycontrolapi.domains.exceptions.InvalidItemDomainException;
+import com.inventorycontrolapi.dtos.item.GetAllItemDTORequest;
+import com.inventorycontrolapi.dtos.item.GetAllItemDTOResponse;
 import com.inventorycontrolapi.dtos.item.SaveItemDTORequest;
 import com.inventorycontrolapi.dtos.item.SaveItemDTOResponse;
 import com.inventorycontrolapi.models.CompanyModel;
@@ -59,5 +63,29 @@ public class ItemService {
 		ItemModel saveItemModel = this.itemRepository.save(itemModel);
 
 		return new SaveItemDTOResponse(saveItemModel.getItemId().toString());
+	}
+
+	public List<GetAllItemDTOResponse> getAll(GetAllItemDTORequest getAllItemDTORequest) {
+		Optional<CompanyModel> findCompanyModelById = this.companyRepository.findById(
+			Long.parseLong(getAllItemDTORequest.getCompanyId())
+		);
+
+		List<ItemModel> itemModels = this.itemRepository.findByCompanyModel(findCompanyModelById.get());
+
+		List<GetAllItemDTOResponse> getAllItemDTOResponses = new ArrayList<GetAllItemDTOResponse>();
+
+		itemModels.forEach(element -> {
+			GetAllItemDTOResponse getAllItemDTOResponse = new GetAllItemDTOResponse(
+				element.getItemId().toString(),
+				element.getName(),
+				String.valueOf(element.getUnitPrice()),
+				String.valueOf(element.getQuantityInStock()),
+				element.getItemCategoryModel().getName()
+			);
+
+			getAllItemDTOResponses.add(getAllItemDTOResponse);
+		});
+
+		return getAllItemDTOResponses;
 	}
 }
