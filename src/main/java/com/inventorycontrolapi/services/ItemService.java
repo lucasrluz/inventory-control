@@ -10,6 +10,8 @@ import com.inventorycontrolapi.domains.ItemDomain;
 import com.inventorycontrolapi.domains.exceptions.InvalidItemDomainException;
 import com.inventorycontrolapi.dtos.item.GetAllItemDTORequest;
 import com.inventorycontrolapi.dtos.item.GetAllItemDTOResponse;
+import com.inventorycontrolapi.dtos.item.GetItemDTORequest;
+import com.inventorycontrolapi.dtos.item.GetItemDTOResponse;
 import com.inventorycontrolapi.dtos.item.SaveItemDTORequest;
 import com.inventorycontrolapi.dtos.item.SaveItemDTOResponse;
 import com.inventorycontrolapi.models.CompanyModel;
@@ -20,6 +22,7 @@ import com.inventorycontrolapi.repositories.ItemCategoryRepository;
 import com.inventorycontrolapi.repositories.ItemRepository;
 import com.inventorycontrolapi.services.exceptions.NameAlreadyRegisteredException;
 import com.inventorycontrolapi.services.exceptions.NotFoundItemCategoryException;
+import com.inventorycontrolapi.services.exceptions.NotFoundItemException;
 
 @Service
 public class ItemService {
@@ -87,5 +90,27 @@ public class ItemService {
 		});
 
 		return getAllItemDTOResponses;
+	}
+
+	public GetItemDTOResponse get(GetItemDTORequest getItemDTORequest) throws NotFoundItemException {
+		Optional<ItemModel> findItemModelById = this.itemRepository.findById(
+			Long.parseLong(getItemDTORequest.getItemId())
+		);
+
+		if (findItemModelById.isEmpty()) {
+			throw new NotFoundItemException();
+		}
+
+		if (!findItemModelById.get().getCompanyModel().getCompanyId().toString().equals(getItemDTORequest.getCompanyId())) {
+			throw new NotFoundItemException();
+		}
+
+		return new GetItemDTOResponse(
+			findItemModelById.get().getItemId().toString(),
+			findItemModelById.get().getName(),
+			String.valueOf(findItemModelById.get().getUnitPrice()),
+			String.valueOf(findItemModelById.get().getQuantityInStock()),
+			findItemModelById.get().getItemCategoryModel().getName()
+		);
 	}
 }
