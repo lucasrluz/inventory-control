@@ -1,13 +1,18 @@
 package com.inventorycontrolapi.controllers;
 
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.inventorycontrolapi.domains.exceptions.InvalidItemDomainException;
+import com.inventorycontrolapi.dtos.item.GetAllItemDTORequest;
+import com.inventorycontrolapi.dtos.item.GetAllItemDTOResponse;
 import com.inventorycontrolapi.dtos.item.SaveItemDTORequest;
 import com.inventorycontrolapi.dtos.item.SaveItemDTOResponse;
 import com.inventorycontrolapi.services.ItemService;
@@ -38,5 +43,16 @@ public class ItemController {
 		} catch (NotFoundItemCategoryException exception) {
 			return ResponseEntity.status(404).body(exception.getMessage());
 		}
+	}
+
+	@GetMapping
+	public ResponseEntity<Object> getAll(Authentication authentication) {
+		String companyId = authentication.getName();
+
+		GetAllItemDTORequest getAllItemDTORequest = new GetAllItemDTORequest(companyId);
+
+		List<GetAllItemDTOResponse> getAllItemDTOResponses = this.itemService.getAll(getAllItemDTORequest);
+
+		return ResponseEntity.status(200).body(getAllItemDTOResponses);
 	}
 }
