@@ -146,6 +146,30 @@ public class UpdateItemServiceTests {
 	}
 
 	@Test
+	public void retornaException_ItemNaoCadastrado_CompanyDiferente() {
+		// Mock
+		CompanyModel companyModelMock = CompanyModelBuilder.createWithCompanyIdAndHashPassword();
+		ItemCategoryModel itemCategoryModelMock = ItemCategoryModelBuilder.createWithItemCategoryId(companyModelMock);
+		ItemModel itemModelMock = new ItemModel(0L, "Item A", 1.11, 1, companyModelMock, itemCategoryModelMock);
+
+		BDDMockito.when(this.itemRepository.findById(ArgumentMatchers.any())).thenReturn(Optional.of(itemModelMock));
+
+		// Test
+		UpdateItemDTORequest updateItemDTORequest = new UpdateItemDTORequest(
+			"0",
+			"1",
+			"Item B",
+			"2.22",
+			"2",
+			"0"
+		);
+
+		Assertions.assertThatExceptionOfType(NotFoundItemException.class)
+			.isThrownBy(() -> this.itemService.update(updateItemDTORequest))
+			.withMessage("Not found Item");
+	}
+
+	@Test
 	public void retornaException_NameJaCadastrado() throws Exception {
 		// Mock
 		CompanyModel companyModelMock = CompanyModelBuilder.createWithCompanyIdAndHashPassword();
