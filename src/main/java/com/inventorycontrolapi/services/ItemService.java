@@ -148,7 +148,7 @@ public class ItemService {
 		}
 
 		Optional<CompanyModel> findCompanyModelById = this.companyRepository.findById(
-			Long.parseLong(updateItemDTORequest.getItemId())
+			Long.parseLong(updateItemDTORequest.getCompanyId())
 		);
 
 		ItemModel itemModel = new ItemModel(
