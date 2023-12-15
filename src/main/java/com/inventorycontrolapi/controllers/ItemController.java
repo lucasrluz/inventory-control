@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,6 +22,8 @@ import com.inventorycontrolapi.dtos.item.GetItemDTORequest;
 import com.inventorycontrolapi.dtos.item.GetItemDTOResponse;
 import com.inventorycontrolapi.dtos.item.SaveItemDTORequest;
 import com.inventorycontrolapi.dtos.item.SaveItemDTOResponse;
+import com.inventorycontrolapi.dtos.item.UpdateItemDTORequest;
+import com.inventorycontrolapi.dtos.item.UpdateItemDTOResponse;
 import com.inventorycontrolapi.services.ItemService;
 import com.inventorycontrolapi.services.exceptions.NameAlreadyRegisteredException;
 import com.inventorycontrolapi.services.exceptions.NotFoundItemCategoryException;
@@ -74,6 +77,24 @@ public class ItemController {
 
 			return ResponseEntity.status(200).body(getItemDTOResponse);
 		} catch (NotFoundItemException exception) {
+			return ResponseEntity.status(404).body(exception.getMessage());
+		}
+	}
+
+	@PutMapping("/{itemId}")
+	public ResponseEntity<Object> update(@PathVariable String itemId, @RequestBody UpdateItemDTORequest updateItemDTORequest, Authentication authentication) {
+		try {
+			String companyId = authentication.getName();
+
+			updateItemDTORequest.setItemId(itemId);
+			updateItemDTORequest.setCompanyId(companyId);
+
+			UpdateItemDTOResponse updateItemDTOResponse = this.itemService.update(updateItemDTORequest);
+
+			return ResponseEntity.status(200).body(updateItemDTOResponse);
+		} catch (InvalidItemDomainException | NameAlreadyRegisteredException exception) {
+			return ResponseEntity.status(400).body(exception.getMessage());
+		} catch (NotFoundItemException | NotFoundItemCategoryException exception) {
 			return ResponseEntity.status(404).body(exception.getMessage());
 		}
 	}
