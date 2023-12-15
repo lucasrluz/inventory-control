@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.inventorycontrolapi.domains.exceptions.InvalidItemDomainException;
+import com.inventorycontrolapi.dtos.item.DeleteItemDTORequest;
+import com.inventorycontrolapi.dtos.item.DeleteItemDTOResponse;
 import com.inventorycontrolapi.dtos.item.GetAllItemDTORequest;
 import com.inventorycontrolapi.dtos.item.GetAllItemDTOResponse;
 import com.inventorycontrolapi.dtos.item.GetItemDTORequest;
@@ -70,6 +73,21 @@ public class ItemController {
 			GetItemDTOResponse getItemDTOResponse = this.itemService.get(getItemDTORequest);
 
 			return ResponseEntity.status(200).body(getItemDTOResponse);
+		} catch (NotFoundItemException exception) {
+			return ResponseEntity.status(404).body(exception.getMessage());
+		}
+	}
+
+	@DeleteMapping("/{itemId}")
+	public ResponseEntity<Object> delete(@PathVariable String itemId, Authentication authentication) {
+		try {
+			String companyId = authentication.getName();
+
+			DeleteItemDTORequest deleteItemDTORequest = new DeleteItemDTORequest(itemId, companyId);
+
+			DeleteItemDTOResponse deleteItemDTOResponse = this.itemService.delete(deleteItemDTORequest);
+
+			return ResponseEntity.status(200).body(deleteItemDTOResponse);
 		} catch (NotFoundItemException exception) {
 			return ResponseEntity.status(404).body(exception.getMessage());
 		}
