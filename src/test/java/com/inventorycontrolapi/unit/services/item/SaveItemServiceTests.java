@@ -1,6 +1,7 @@
 package com.inventorycontrolapi.unit.services.item;
 
 import java.util.Optional;
+import java.util.UUID;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -78,7 +79,7 @@ public class SaveItemServiceTests {
 		CompanyModel companyModelForItemMock = CompanyModelBuilder.createWithCompanyIdAndHashPassword();
 		ItemCategoryModel itemCategoryModelForItemMock = ItemCategoryModelBuilder.createWithItemCategoryId(companyModelForItemMock);
 		itemCategoryModelForItemMock.setItemCategoryId(1L);
-		companyModelForItemMock.setCompanyId(1L);
+		companyModelForItemMock.setCompanyId(UUID.randomUUID());
 		ItemModel itemModelWithName = ItemModelBuilder.createWithItemId(companyModelForItemMock, itemCategoryModelForItemMock);
 
 		BDDMockito.when(this.itemRepository.findByName(ArgumentMatchers.any())).thenReturn(Optional.of(itemModelWithName));
@@ -135,6 +136,7 @@ public class SaveItemServiceTests {
 
 		// Test
 		SaveItemDTORequest saveItemDTORequest = SaveItemDTORequestBuilder.createWithValidData();
+		saveItemDTORequest.setCompanyId(companyModelMock.getCompanyId().toString());
 
 		Assertions.assertThatExceptionOfType(NameAlreadyRegisteredException.class)
 			.isThrownBy(() -> this.itemService.save(saveItemDTORequest))

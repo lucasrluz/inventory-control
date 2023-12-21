@@ -35,6 +35,7 @@ public class GetCompanyServiceTests {
 
 		// Test
 		GetCompanyDTORequest getCompanyDTORequest = GetCompanyDTORequestBuilder.createWithValidData();
+		getCompanyDTORequest.setCompanyId(companyModelMock.getCompanyId().toString());
 
 		GetCompanyDTOResponse getCompanyDTOResponse = this.companyService.get(getCompanyDTORequest);
 

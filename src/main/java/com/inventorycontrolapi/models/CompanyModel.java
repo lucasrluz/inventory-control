@@ -1,6 +1,7 @@
 package com.inventorycontrolapi.models;
 
 import java.util.Set;
+import java.util.UUID;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -14,8 +15,8 @@ import jakarta.persistence.Table;
 @Table(name = "_company")
 public class CompanyModel {
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private Long companyId;	
+	@GeneratedValue(strategy = GenerationType.UUID)
+	private UUID companyId;	
 
 	@Column(nullable = false)
 	private String name;
@@ -40,18 +41,18 @@ public class CompanyModel {
 		this.password = password;
 	}
 
-	public CompanyModel(Long companyId, String name, String email, String password) {
+	public CompanyModel(UUID companyId, String name, String email, String password) {
 		this.companyId = companyId;
 		this.name = name;
 		this.email = email;
 		this.password = password;
 	}
 
-	public Long getCompanyId() {
+	public UUID getCompanyId() {
 		return companyId;
 	}
 
-	public void setCompanyId(Long companyId) {
+	public void setCompanyId(UUID companyId) {
 		this.companyId = companyId;
 	}
 

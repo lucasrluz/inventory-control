@@ -1,6 +1,7 @@
 package com.inventorycontrolapi.unit.services.itemCategory;
 
 import java.util.Optional;
+import java.util.UUID;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -52,6 +53,7 @@ public class UpdateItemCategoryServiceTests {
 
 		// Test
 		UpdateItemCategoryDTORequest updateItemCategoryDTORequest = UpdateItemCategoryDTORequestBuilder.createWithValidData();
+		updateItemCategoryDTORequest.setCompanyId(companyModelMock.getCompanyId().toString());
 
 		UpdateItemCategoryDTOResponse updateItemCategoryDTOResponse = this.itemCategoryService.update(updateItemCategoryDTORequest);
 
@@ -102,6 +104,7 @@ public class UpdateItemCategoryServiceTests {
 		
 		// Test
 		UpdateItemCategoryDTORequest updateItemCategoryDTORequest = UpdateItemCategoryDTORequestBuilder.createWithValidData();
+		updateItemCategoryDTORequest.setCompanyId(companyModelMock.getCompanyId().toString());
 		
 		Assertions.assertThatExceptionOfType(NameAlreadyRegisteredException.class)
 			.isThrownBy(() -> this.itemCategoryService.update(updateItemCategoryDTORequest))
@@ -116,7 +119,7 @@ public class UpdateItemCategoryServiceTests {
 		BDDMockito.when(this.itemCategoryRepository.findById(ArgumentMatchers.any())).thenReturn(Optional.of(itemCategoryModelMock));
 
 		CompanyModel newCompanyModelMock = CompanyModelBuilder.createWithCompanyIdAndHashPassword();
-		newCompanyModelMock.setCompanyId(1L);
+		newCompanyModelMock.setCompanyId(UUID.randomUUID());
 		newCompanyModelMock.setName("Company B");
 		newCompanyModelMock.setEmail("companyb@gmail.com");
 
@@ -136,6 +139,7 @@ public class UpdateItemCategoryServiceTests {
 
 		// Test
 		UpdateItemCategoryDTORequest updateItemCategoryDTORequest = UpdateItemCategoryDTORequestBuilder.createWithValidData();
+		updateItemCategoryDTORequest.setCompanyId(companyModelMock.getCompanyId().toString());
 
 		UpdateItemCategoryDTOResponse updateItemCategoryDTOResponse = this.itemCategoryService.update(updateItemCategoryDTORequest);
 

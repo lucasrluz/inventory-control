@@ -1,6 +1,7 @@
 package com.inventorycontrolapi.services;
 
 import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
@@ -86,7 +87,7 @@ public class CompanyService {
 
 	public GetCompanyDTOResponse get(GetCompanyDTORequest getCompanyDTORequest) {
 		Optional<CompanyModel> findCompanyModelByCompanyId = this.companyRepository.findById(
-			Long.parseLong(getCompanyDTORequest.getCompanyId())
+			UUID.fromString(getCompanyDTORequest.getCompanyId())
 		);
 
 		return new GetCompanyDTOResponse(
@@ -114,7 +115,7 @@ public class CompanyService {
 		String hashPassword = BCrypt.withDefaults().hashToString(12, updateCompanyDTORequest.getPassword().toCharArray());
 
 		CompanyModel companyModel = new CompanyModel(
-			Long.parseLong(updateCompanyDTORequest.getCompanyId()),
+			UUID.fromString(updateCompanyDTORequest.getCompanyId()),
 			updateCompanyDTORequest.getName(),
 			updateCompanyDTORequest.getEmail(),
 			hashPassword
@@ -130,7 +131,7 @@ public class CompanyService {
 	}
 
 	public DeleteCompanyDTOResponse delete(DeleteCompanyDTORequest deleteCompanyDTORequest) {
-		this.companyRepository.deleteById(Long.parseLong(deleteCompanyDTORequest.getCompanyId()));
+		this.companyRepository.deleteById(UUID.fromString(deleteCompanyDTORequest.getCompanyId()));
 
 		return new DeleteCompanyDTOResponse(deleteCompanyDTORequest.getCompanyId());
 	}

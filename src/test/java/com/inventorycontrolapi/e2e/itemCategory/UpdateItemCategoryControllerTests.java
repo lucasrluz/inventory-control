@@ -12,6 +12,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 
 import java.util.Optional;
+import java.util.UUID;
 
 import org.assertj.core.api.Assertions;
 import org.json.JSONObject;
@@ -108,7 +109,7 @@ public class UpdateItemCategoryControllerTests {
 		ItemCategoryModel saveItemCategoryModel = this.itemCategoryRepository.save(itemCategoryModel);
 
 		CompanyModel companyModelB = CompanyModelBuilder.createWithCompanyIdAndHashPassword();
-		companyModelB.setCompanyId(111L);
+		companyModelB.setCompanyId(UUID.randomUUID());
 		companyModelB.setName("Company B");
 		companyModelB.setEmail("companyb@gmail.com");
 		this.companyRepository.save(companyModelB);
@@ -176,7 +177,7 @@ public class UpdateItemCategoryControllerTests {
 		String jwt = this.jwtService.generateJwt(saveCompanyModel.getCompanyId().toString());
 
 		CompanyModel companyModelForItemCategoryModel = CompanyModelBuilder.createWithCompanyIdAndHashPassword();
-		companyModelForItemCategoryModel.setCompanyId(1L);
+		companyModelForItemCategoryModel.setCompanyId(UUID.randomUUID());
 		companyModelForItemCategoryModel.setName("Company B");
 		companyModelForItemCategoryModel.setEmail("companyb@gmail.com");
 		
