@@ -1,6 +1,7 @@
 package com.inventorycontrolapi.unit.services.company;
 
 import java.util.Optional;
+import java.util.UUID;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -21,6 +22,8 @@ import com.inventorycontrolapi.services.exceptions.EmailOrPasswordInvalidExcepti
 import com.inventorycontrolapi.util.company.CompanyModelBuilder;
 import com.inventorycontrolapi.util.company.SignInCompanyDTORequestBuilder;
 
+import at.favre.lib.crypto.bcrypt.BCrypt;
+
 @ExtendWith(SpringExtension.class)
 public class SignInCompanyServiceTests {
 	@InjectMocks
@@ -35,27 +38,49 @@ public class SignInCompanyServiceTests {
 	@Test
 	public void retornaJwt() throws Exception {
 		// Mocks
-		CompanyModel companyModel = CompanyModelBuilder.createWithCompanyIdAndHashPassword();
-		BDDMockito.when(this.companyRepository.findByEmail(ArgumentMatchers.any())).thenReturn(Optional.of(companyModel));
-		BDDMockito.when(this.jwtService.generateJwt(ArgumentMatchers.any())).thenReturn("fake-jwt");
+		CompanyModel companyModelMock = new CompanyModel(
+			UUID.randomUUID(),
+			"Company A",
+			"companya@gmail.com",
+			BCrypt.withDefaults().hashToString(12, "123".toCharArray())
+		);
+
+		BDDMockito
+			.when(this.companyRepository.findByEmail(ArgumentMatchers.any()))
+			.thenReturn(Optional.of(companyModelMock));
+
+		BDDMockito
+			.when(this.jwtService.generateJwt(ArgumentMatchers.any()))
+			.thenReturn("fake-jwt");
 
 		// Test
-		SignInCompanyDTORequest signInCompanyDTORequest = SignInCompanyDTORequestBuilder.createWithValidData();
+		SignInCompanyDTORequest signInCompanyDTORequest = new SignInCompanyDTORequest(
+			companyModelMock.getEmail(),
+			"123"	
+		);
 
 		SignInCompanyDTOResponse signInCompanyDTOResponse = this.companyService.signIn(signInCompanyDTORequest);
 
-		Assertions.assertThat(signInCompanyDTOResponse.getJwt()).isEqualTo("fake-jwt");
+		Assertions
+			.assertThat(signInCompanyDTOResponse.getJwt())
+			.isEqualTo("fake-jwt");
 	}
 
 	@Test
 	public void retornaException_EmailNaoCadastrado() throws Exception {
 		// Mocks
-		BDDMockito.when(this.companyRepository.findByEmail(ArgumentMatchers.any())).thenReturn(Optional.empty());
+		BDDMockito
+			.when(this.companyRepository.findByEmail(ArgumentMatchers.any()))
+			.thenReturn(Optional.empty());
 
 		// Test
-		SignInCompanyDTORequest signInCompanyDTORequest = SignInCompanyDTORequestBuilder.createWithValidData();
+		SignInCompanyDTORequest signInCompanyDTORequest = new SignInCompanyDTORequest(
+			"companya@gmail.com",
+			"123"
+		);
 
-		Assertions.assertThatExceptionOfType(EmailOrPasswordInvalidException.class)
+		Assertions
+			.assertThatExceptionOfType(EmailOrPasswordInvalidException.class)
 			.isThrownBy(() -> this.companyService.signIn(signInCompanyDTORequest))
 			.withMessage("Email or password invalid");
 	}
@@ -63,14 +88,25 @@ public class SignInCompanyServiceTests {
 	@Test
 	public void retornaException_PasswordInvalida() throws Exception {
 		// Mocks
-		CompanyModel companyModel = CompanyModelBuilder.createWithCompanyIdAndHashPassword();
-		companyModel.setPassword("456");
-		BDDMockito.when(this.companyRepository.findByEmail(ArgumentMatchers.any())).thenReturn(Optional.of(companyModel));
+		CompanyModel companyModelMock = new CompanyModel(
+			UUID.randomUUID(),
+			"Company A",
+			"companya@gmail.com",
+			BCrypt.withDefaults().hashToString(12, "456".toCharArray())
+		);
+
+		BDDMockito
+			.when(this.companyRepository.findByEmail(ArgumentMatchers.any()))
+			.thenReturn(Optional.of(companyModelMock));
 
 		// Test
-		SignInCompanyDTORequest signInCompanyDTORequest = SignInCompanyDTORequestBuilder.createWithValidData();
+		SignInCompanyDTORequest signInCompanyDTORequest = new SignInCompanyDTORequest(
+			"companya@gmail.com",
+			"123"
+		);
 
-		Assertions.assertThatExceptionOfType(EmailOrPasswordInvalidException.class)
+		Assertions
+			.assertThatExceptionOfType(EmailOrPasswordInvalidException.class)
 			.isThrownBy(() -> this.companyService.signIn(signInCompanyDTORequest))
 			.withMessage("Email or password invalid");
 	}
