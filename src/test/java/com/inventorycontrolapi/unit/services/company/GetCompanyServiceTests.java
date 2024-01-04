@@ -1,7 +1,6 @@
 package com.inventorycontrolapi.unit.services.company;
 
 import java.util.Optional;
-import java.util.UUID;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -17,8 +16,8 @@ import com.inventorycontrolapi.dtos.company.GetCompanyDTOResponse;
 import com.inventorycontrolapi.models.CompanyModel;
 import com.inventorycontrolapi.repositories.CompanyRepository;
 import com.inventorycontrolapi.services.CompanyService;
-
-import at.favre.lib.crypto.bcrypt.BCrypt;
+import com.inventorycontrolapi.util.company.CompanyModelBuilder;
+import com.inventorycontrolapi.util.company.GetCompanyDTORequestBuilder;
 
 @ExtendWith(SpringExtension.class)
 public class GetCompanyServiceTests {
@@ -31,26 +30,15 @@ public class GetCompanyServiceTests {
 	@Test
 	public void retornaInformacoesDaCompany() {
 		// Mock
-		CompanyModel companyModelMock = new CompanyModel(
-			UUID.randomUUID(),
-			"Company A",
-			"companya@gmail.com",
-			BCrypt.withDefaults().hashToString(12, "123".toCharArray())
-		);
-
-		BDDMockito
-			.when(this.companyRepository.findById(ArgumentMatchers.any()))
-			.thenReturn(Optional.of(companyModelMock));
+		CompanyModel companyModelMock = CompanyModelBuilder.createWithCompanyIdAndHashPassword();
+		BDDMockito.when(this.companyRepository.findById(ArgumentMatchers.any())).thenReturn(Optional.of(companyModelMock));
 
 		// Test
-		GetCompanyDTORequest getCompanyDTORequest = new GetCompanyDTORequest(
-			companyModelMock.getCompanyId().toString()
-		);
+		GetCompanyDTORequest getCompanyDTORequest = GetCompanyDTORequestBuilder.createWithValidData();
+		getCompanyDTORequest.setCompanyId(companyModelMock.getCompanyId().toString());
 
 		GetCompanyDTOResponse getCompanyDTOResponse = this.companyService.get(getCompanyDTORequest);
 
-		Assertions
-			.assertThat(getCompanyDTOResponse.getCompanyId())
-			.isEqualTo(getCompanyDTORequest.getCompanyId());
+		Assertions.assertThat(getCompanyDTOResponse.getCompanyId()).isEqualTo(getCompanyDTORequest.getCompanyId());
 	}
 }

@@ -4,7 +4,6 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.assertj.core.api.Assertions;
-import org.checkerframework.checker.units.qual.m;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentMatchers;
@@ -29,8 +28,6 @@ import com.inventorycontrolapi.util.item.ItemModelBuilder;
 import com.inventorycontrolapi.util.item.SaveItemDTORequestBuilder;
 import com.inventorycontrolapi.util.itemCategory.ItemCategoryModelBuilder;
 
-import at.favre.lib.crypto.bcrypt.BCrypt;
-
 @ExtendWith(SpringExtension.class)
 public class SaveItemServiceTests {
 	@InjectMocks
@@ -48,109 +45,46 @@ public class SaveItemServiceTests {
 	@Test
 	public void retornaItemId_ComNameNaoCadastrado() throws Exception {
 		// Mock
-		CompanyModel companyModelMock = new CompanyModel(
-			UUID.randomUUID(),
-			"Company A",
-			"companya@gmail.com",
-			BCrypt.withDefaults().hashToString(12, "123".toCharArray())
+		CompanyModel companyModelMock = CompanyModelBuilder.createWithCompanyIdAndHashPassword();
+		ItemCategoryModel itemCategoryModelMock = ItemCategoryModelBuilder.createWithItemCategoryId(companyModelMock);
+
+		BDDMockito.when(this.itemCategoryRepository.findById(ArgumentMatchers.any())).thenReturn(
+			Optional.of(itemCategoryModelMock)
 		);
 
-		ItemCategoryModel itemCategoryModelMock = new ItemCategoryModel(
-			0L,
-			"Item Category A",
-			companyModelMock
-		);
-
-		BDDMockito
-			.when(this.itemCategoryRepository.findById(ArgumentMatchers.any()))
-			.thenReturn(Optional.of(itemCategoryModelMock));
-
-		BDDMockito
-			.when(this.itemRepository.findByName(ArgumentMatchers.any()))
-			.thenReturn(Optional.empty());
-
-		BDDMockito
-			.when(this.companyRepository.findById(ArgumentMatchers.any()))
-			.thenReturn(Optional.of(companyModelMock));
+		BDDMockito.when(this.itemRepository.findByName(ArgumentMatchers.any())).thenReturn(Optional.empty());
+		BDDMockito.when(this.companyRepository.findById(ArgumentMatchers.any())).thenReturn(Optional.of(companyModelMock));
 		
-		ItemModel itemModelMock = new ItemModel(
-			0L,
-			"Item A",
-			1.11,
-			1,
-			companyModelMock,
-			itemCategoryModelMock
-		);
-
-		BDDMockito
-			.when(this.itemRepository.save(ArgumentMatchers.any()))
-			.thenReturn(itemModelMock);
+		ItemModel itemModelMock = ItemModelBuilder.createWithItemId(companyModelMock, itemCategoryModelMock);
+		BDDMockito.when(this.itemRepository.save(ArgumentMatchers.any())).thenReturn(itemModelMock);
 
 		// Test
-		SaveItemDTORequest saveItemDTORequest = new SaveItemDTORequest(
-			companyModelMock.getCompanyId().toString(),
-			itemCategoryModelMock.getItemCategoryId().toString(),
-			"Item A",
-			"1.11",
-			"1"
-		);
+		SaveItemDTORequest saveItemDTORequest = SaveItemDTORequestBuilder.createWithValidData();
 
 		SaveItemDTOResponse saveItemDTOResponse = this.itemService.save(saveItemDTORequest);
 
-		Assertions
-			.assertThat(saveItemDTOResponse.getItemId())
-			.isEqualTo(itemModelMock.getItemId().toString());
+		Assertions.assertThat(saveItemDTOResponse.getItemId()).isEqualTo(itemModelMock.getItemId().toString());
 	}
 
 	@Test
 	public void retornaItemId_ComNameCadastrado() throws Exception {
 		// Mock
-		CompanyModel companyModelMock = new CompanyModel(
-			UUID.randomUUID(),
-			"Company A",
-			"companya@gmail.com",
-			BCrypt.withDefaults().hashToString(12, "123".toCharArray())
+		CompanyModel companyModelMock = CompanyModelBuilder.createWithCompanyIdAndHashPassword();
+		ItemCategoryModel itemCategoryModelMock = ItemCategoryModelBuilder.createWithItemCategoryId(companyModelMock);
+
+		BDDMockito.when(this.itemCategoryRepository.findById(ArgumentMatchers.any())).thenReturn(
+			Optional.of(itemCategoryModelMock)
 		);
 
-		ItemCategoryModel itemCategoryModelMock = new ItemCategoryModel(
-			0L,
-			"Item Category A",
-			companyModelMock
-		);
+		CompanyModel companyModelForItemMock = CompanyModelBuilder.createWithCompanyIdAndHashPassword();
+		ItemCategoryModel itemCategoryModelForItemMock = ItemCategoryModelBuilder.createWithItemCategoryId(companyModelForItemMock);
+		itemCategoryModelForItemMock.setItemCategoryId(1L);
+		companyModelForItemMock.setCompanyId(UUID.randomUUID());
+		ItemModel itemModelWithName = ItemModelBuilder.createWithItemId(companyModelForItemMock, itemCategoryModelForItemMock);
 
-		BDDMockito
-			.when(this.itemCategoryRepository.findById(ArgumentMatchers.any()))
-			.thenReturn(Optional.of(itemCategoryModelMock));
+		BDDMockito.when(this.itemRepository.findByName(ArgumentMatchers.any())).thenReturn(Optional.of(itemModelWithName));
 
-		CompanyModel companyModelForItemMock = new CompanyModel(
-			UUID.randomUUID(),
-			"Company B",
-			"companyb@gmail.com",
-			BCrypt.withDefaults().hashToString(12, "123".toCharArray())
-		);
-
-		ItemCategoryModel itemCategoryModelForItemMock = new ItemCategoryModel(
-			1L,
-			"Item Category B",
-			companyModelForItemMock
-		);
-
-		ItemModel itemModelWithName = new ItemModel(
-			0L,
-			"Item A",
-			1.11,
-			1,
-			companyModelForItemMock,
-			itemCategoryModelForItemMock
-		);
-
-		BDDMockito
-			.when(this.itemRepository.findByName(ArgumentMatchers.any()))
-			.thenReturn(Optional.of(itemModelWithName));
-
-		BDDMockito
-			.when(this.companyRepository.findById(ArgumentMatchers.any()))
-			.thenReturn(Optional.of(companyModelMock));
+		BDDMockito.when(this.companyRepository.findById(ArgumentMatchers.any())).thenReturn(Optional.of(companyModelMock));
 		
 		ItemModel itemModelMock = ItemModelBuilder.createWithItemId(companyModelMock, itemCategoryModelMock);
 		BDDMockito.when(this.itemRepository.save(ArgumentMatchers.any())).thenReturn(itemModelMock);

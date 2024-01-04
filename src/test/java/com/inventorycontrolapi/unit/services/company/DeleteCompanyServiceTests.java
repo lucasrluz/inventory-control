@@ -1,7 +1,5 @@
 package com.inventorycontrolapi.unit.services.company;
 
-import java.util.UUID;
-
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,6 +11,7 @@ import com.inventorycontrolapi.dtos.company.DeleteCompanyDTORequest;
 import com.inventorycontrolapi.dtos.company.DeleteCompanyDTOResponse;
 import com.inventorycontrolapi.repositories.CompanyRepository;
 import com.inventorycontrolapi.services.CompanyService;
+import com.inventorycontrolapi.util.company.DeleteCompanyDTORequestBuilder;
 
 @ExtendWith(SpringExtension.class)
 public class DeleteCompanyServiceTests {
@@ -24,14 +23,10 @@ public class DeleteCompanyServiceTests {
 
 	@Test
 	public void retornaCompanyId() {
-		DeleteCompanyDTORequest deleteCompanyDTORequest = new DeleteCompanyDTORequest(
-			UUID.randomUUID().toString()
-		);
+		DeleteCompanyDTORequest deleteCompanyDTORequest = DeleteCompanyDTORequestBuilder.createWithValidData();
 
 		DeleteCompanyDTOResponse deleteCompanyDTOResponse = this.companyService.delete(deleteCompanyDTORequest);
 
-		Assertions
-			.assertThat(deleteCompanyDTOResponse.getCompanyId())
-			.isEqualTo(deleteCompanyDTORequest.getCompanyId());
+		Assertions.assertThat(deleteCompanyDTOResponse.getCompanyId()).isEqualTo(deleteCompanyDTORequest.getCompanyId());
 	}
 }
