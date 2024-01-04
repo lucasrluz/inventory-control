@@ -1,7 +1,6 @@
 package com.inventorycontrolapi.unit.services.item;
 
 import java.util.Optional;
-import java.util.UUID;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -91,7 +90,7 @@ public class UpdateItemServiceTests {
 		BDDMockito.when(this.itemRepository.findById(ArgumentMatchers.any())).thenReturn(Optional.of(itemModelMock));
 
 		CompanyModel companyModelMockB = CompanyModelBuilder.createWithCompanyIdAndHashPassword();
-		companyModelMockB.setCompanyId(UUID.randomUUID());
+		companyModelMockB.setCompanyId(1L);
 		ItemCategoryModel itemCategoryModelMockB = ItemCategoryModelBuilder.createWithItemCategoryId(companyModelMockB);
 		ItemModel itemModelMockB = new ItemModel(1L, "Item B", 1.11, 1, companyModelMockB, itemCategoryModelMockB);
 

@@ -3,7 +3,6 @@ package com.inventorycontrolapi.services;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
@@ -58,7 +57,7 @@ public class ItemService {
 			throw new NameAlreadyRegisteredException();
 		}
 
-		Optional<CompanyModel> findCompanyModelByCompanyId = this.companyRepository.findById(UUID.fromString(saveItemDTORequest.getCompanyId()));
+		Optional<CompanyModel> findCompanyModelByCompanyId = this.companyRepository.findById(Long.parseLong(saveItemDTORequest.getCompanyId()));
 
 		ItemModel itemModel = new ItemModel(
 			saveItemDTORequest.getName(),
@@ -75,7 +74,7 @@ public class ItemService {
 
 	public List<GetAllItemDTOResponse> getAll(GetAllItemDTORequest getAllItemDTORequest) {
 		Optional<CompanyModel> findCompanyModelById = this.companyRepository.findById(
-			UUID.fromString(getAllItemDTORequest.getCompanyId())
+			Long.parseLong(getAllItemDTORequest.getCompanyId())
 		);
 
 		List<ItemModel> itemModels = this.itemRepository.findByCompanyModel(findCompanyModelById.get());
@@ -149,7 +148,7 @@ public class ItemService {
 		}
 
 		Optional<CompanyModel> findCompanyModelById = this.companyRepository.findById(
-			UUID.fromString(updateItemDTORequest.getCompanyId())
+			Long.parseLong(updateItemDTORequest.getCompanyId())
 		);
 
 		ItemModel itemModel = new ItemModel(

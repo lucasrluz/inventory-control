@@ -2,7 +2,6 @@ package com.inventorycontrolapi.config;
 
 import java.util.Collections;
 import java.util.Optional;
-import java.util.UUID;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -36,7 +35,7 @@ public class SecurityFilter extends OncePerRequestFilter {
         if (jwt != null) {
             String companyId = this.jwtService.validateJwt(jwt);
 
-            Optional<CompanyModel> findCompanyModelResponse = this.companyRepository.findById(UUID.fromString(companyId));
+            Optional<CompanyModel> findCompanyModelResponse = this.companyRepository.findById(Long.parseLong(companyId));
 
             if (findCompanyModelResponse.isEmpty()) {
                 response.setStatus(403);

@@ -12,7 +12,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 import java.util.Optional;
-import java.util.UUID;
 
 import org.assertj.core.api.Assertions;
 import org.json.JSONObject;
@@ -65,7 +64,7 @@ public class SignUpCompanyControllerTests {
 
 		String companyId = new JSONObject(response.getContentAsString()).getString("companyId");
 
-		Optional<CompanyModel> findCompanyModelByCompanyId = this.companyRepository.findById(UUID.fromString(companyId));
+		Optional<CompanyModel> findCompanyModelByCompanyId = this.companyRepository.findById(Long.parseLong(companyId));
 
 		Assertions.assertThat(findCompanyModelByCompanyId.isEmpty()).isEqualTo(false);
 		Assertions.assertThat(findCompanyModelByCompanyId.get().getName()).isEqualTo("Company A");

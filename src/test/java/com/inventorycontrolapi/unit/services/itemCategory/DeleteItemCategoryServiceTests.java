@@ -39,7 +39,6 @@ public class DeleteItemCategoryServiceTests {
 
 		// Test
 		DeleteItemCategoryDTORequest deleteItemCategoryDTORequest = DeleteItemCategoryDTORequestBuilder.createWithValidData();
-		deleteItemCategoryDTORequest.setCompanyId(companyModelMock.getCompanyId().toString());
 
 		DeleteItemCategoryDTOResponse deleteItemCategoryDTOResponse = this.itemCategoryService.delete(deleteItemCategoryDTORequest);
 

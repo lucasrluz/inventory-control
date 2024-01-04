@@ -3,7 +3,6 @@ package com.inventorycontrolapi.services;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
@@ -38,7 +37,7 @@ public class ItemCategoryService {
 		ItemCategoryDomain.validate(saveItemCategoryDTORequest.getName());
 
 		Optional<CompanyModel> findCompanyModelByCompanyId = this.companyRepository.findById(
-			UUID.fromString(saveItemCategoryDTORequest.getCompanyId())
+			Long.parseLong(saveItemCategoryDTORequest.getCompanyId())
 		);
 
 		ItemCategoryModel itemCategoryModel = new ItemCategoryModel(
@@ -52,7 +51,7 @@ public class ItemCategoryService {
 	}
 
 	public List<GetAllItemCategoryDTOResponse> getAll(GetAllItemCategoryDTORequest getAllItemCategoryDTORequest) {
-		Optional<CompanyModel> findCompanyModel = this.companyRepository.findById(UUID.fromString(
+		Optional<CompanyModel> findCompanyModel = this.companyRepository.findById(Long.parseLong(
 			getAllItemCategoryDTORequest.getCompanyId())
 		);
 
@@ -97,7 +96,7 @@ public class ItemCategoryService {
 			throw new NameAlreadyRegisteredException();
 		}
 
-		Optional<CompanyModel> findCompanyModel = this.companyRepository.findById(UUID.fromString(
+		Optional<CompanyModel> findCompanyModel = this.companyRepository.findById(Long.parseLong(
 			updateItemCategoryDTORequest.getCompanyId())
 		);
 

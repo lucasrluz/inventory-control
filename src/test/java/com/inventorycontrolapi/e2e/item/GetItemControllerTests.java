@@ -11,8 +11,6 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MockMvc;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
-import java.util.UUID;
-
 import org.assertj.core.api.Assertions;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -113,7 +111,7 @@ public class GetItemControllerTests {
 		CompanyModel saveCompanyModel = this.companyRepository.save(companyModel);
 
 		CompanyModel companyModelForItem = CompanyModelBuilder.createWithCompanyIdAndHashPassword();
-		companyModelForItem.setCompanyId(UUID.randomUUID());
+		companyModelForItem.setCompanyId(1L);
 		companyModelForItem.setEmail("companyb@gmail.com");
 		CompanyModel saveCompanyModelForItem = this.companyRepository.save(companyModelForItem);
 
