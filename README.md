@@ -7,6 +7,8 @@
 
 Este projeto é uma API construída usando **Java, Spring Boot, PostgresSQL e JWT.**
 
+![Open API](https://github.com/lucasrluz/inventory-control/blob/main/screenshot.png)
+
 A API foi desenvolvida para por em meu portifólio e mostrar os meus conhecimentos.
 
 ## Seções
